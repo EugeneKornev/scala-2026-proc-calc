@@ -1,3 +1,5 @@
+import scala.util.boundary, boundary.break
+
 /** Software implementation of PROC (PROstoy Calculator) mk. 1 (or mk. 2).
   *
   * You should finish this procedure according to
@@ -14,11 +16,42 @@
 
   /** Representation of `acc` register. */
   var acc: Int = 0
-  // define additional registers here
 
-  for (c <- commands) {
-    // implement your calculator's logic here
-  }
+  var A: Int = 0
+  var B: Int = 0
 
+  var blink: Boolean = false
+
+  boundary:
+    for c <- commands do 
+      c match {
+        case "+" =>
+          acc = A + B
+          blink = false
+        case "-" =>
+          acc = A - B
+          blink = false
+        case "*" =>
+          acc = A * B
+          blink = false
+        case "/" =>
+          acc = if B != 0 then A / B else 0
+          blink = false
+        case "swap" =>
+          val (newA, newB) = (B, A)
+          A = newA
+          B = newB
+        case "blink" =>
+          blink = !blink
+        case "acc" =>
+          if blink then B = acc else A = acc
+          blink = !blink
+        case "break" =>
+          break()
+        case other =>
+          val tmp = parseInt(c)
+          if blink then B = tmp else A = tmp
+          blink = !blink
+      }
   println(acc)
 }
